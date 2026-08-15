@@ -1,0 +1,4 @@
+interface:
+  display_name: "C盘安全清理"
+  short_description: "自动检测 C 盘健康，安全清理并校验转存普通大文件"
+  default_prompt: "Use $clean-windows-c-drive to check C: health, audit space, and safely clean or relocate approved files after preview."
