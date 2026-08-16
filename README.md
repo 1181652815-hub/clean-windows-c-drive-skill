@@ -1,6 +1,6 @@
 # Clean Windows C Drive Skill
 
-A safety-first Agent Skill for checking Windows C: drive health, finding reclaimable space, cleaning a strict allowlist of low-risk files, and relocating approved large Downloads files to another fixed drive.
+A safety-first Agent Skill for checking Windows C: drive health, deeply cleaning a strict allowlist of regenerable caches and diagnostic leftovers, using Windows-supported component cleanup, and relocating approved large Downloads files to another fixed drive.
 
 中文说明见下方。
 
@@ -10,7 +10,8 @@ A safety-first Agent Skill for checking Windows C: drive health, finding reclaim
 - Checks free space, NTFS volume status, backing disk status, recent storage errors, and TRIM information.
 - Audits Windows temporary data, update caches, crash dumps, and other cleanup candidates.
 - Previews every supported cleanup before deletion.
-- Restricts automatic deletion to old user temporary files and old crash dumps.
+- Provides a fixed deep-safe profile for user temp files, DirectX shader cache, Chrome/Edge cache-only directories, old crash dumps, Windows error reports, and installer temporary files.
+- Uses DISM component cleanup and Delivery Optimization cleanup only through supported Windows commands and only after approval.
 - Builds an exact relocation manifest for approved large Downloads files.
 - Relocates by copy, size/SHA-256 verification, then source deletion.
 - Refuses arbitrary paths, destination overwrites, reparse points, offline placeholders, and protected system locations.
@@ -57,6 +58,12 @@ Preview safe cleanup:
 Use $clean-windows-c-drive to preview low-risk cleanup. Do not delete anything until I approve exact categories.
 ```
 
+Preview the fixed deep-safe profile:
+
+```text
+Use $clean-windows-c-drive to run a deep-safe cleanup preview, including Windows component-store analysis. Show everything first and do not delete until I approve.
+```
+
 Preview relocation to D::
 
 ```text
@@ -74,6 +81,8 @@ Use $clean-windows-c-drive to create a manifest of large old Downloads files tha
 - 自动检测 C 盘健康状态。
 - 分析临时文件、更新缓存和崩溃转储等占用。
 - 预览符合年龄规则的低风险清理文件。
+- 使用固定“深度安全档”清理临时文件、着色器缓存、浏览器纯缓存、旧崩溃转储、错误报告和安装器临时文件。
+- 组件存储和传递优化缓存只通过 Windows 官方命令处理。
 - 在明确批准后清理白名单目录。
 - 为 Downloads 中较大、较旧的普通文件生成精确转存清单。
 - 先复制到其他固定磁盘，校验大小和 SHA-256 后才删除 C 盘原件。
@@ -90,6 +99,10 @@ Use $clean-windows-c-drive to create a manifest of large old Downloads files tha
 
 ```text
 使用 $clean-windows-c-drive 检查 C 盘健康并扫描可清理内容，先给我报告，不要删除或移动任何文件。
+```
+
+```text
+使用 $clean-windows-c-drive 运行深度安全清理预览，包括组件存储分析；先列出全部候选，等我确认后再执行。
 ```
 
 ## Requirements

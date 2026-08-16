@@ -1,6 +1,6 @@
 ---
 name: clean-windows-c-drive
-description: "Automatically assess Windows C: drive health, safely reclaim space, and relocate approved ordinary user files to another fixed drive without breaking Windows or installed applications. Use when a user asks whether C: is healthy, wants automatic C: checks, asks what is filling C:, how to clean C:, whether files are safe to remove, or wants large files moved off C:. Always run the read-only health gate and audit, use manifest-based copy-verify-delete relocation, stop on storage-health warnings, and require explicit approval before changing anything."
+description: "Automatically assess Windows C: drive health, deeply clean a fixed allowlist of regenerable caches and diagnostic leftovers, use Windows-supported component cleanup, and relocate approved ordinary user files to another fixed drive without breaking Windows or installed applications. Use when a user asks whether C: is healthy, wants automatic C: checks, asks what is filling C:, requests safe or deep C: cleanup, asks whether files are safe to remove, or wants large files moved off C:. Always run the read-only health gate and preview, protect system/personal/configuration data, use manifest-based copy-verify-delete relocation, and require explicit approval before changing anything."
 ---
 
 # Clean Windows C Drive
@@ -79,6 +79,22 @@ Before changing anything, list each exact category or path, measured size, suppo
 Ask for approval of exact cleanup groups. Approval for one group applies only to that group. Obtain separate approval for Recycle Bin, personal files, uninstalling apps, hibernation, restore points, or rollback data.
 
 ### 7. Use supported cleanup
+
+For a deep cleanup request, read [references/deep-clean-policy.md](references/deep-clean-policy.md). Preview the fixed deep-safe profile first:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-DeepCDriveCleanup.ps1" -Mode Preview -IncludeComponentStore -IncludeDeliveryOptimization
+```
+
+The deep profile covers only regenerable caches and old diagnostic/installer leftovers at exact roots. It detects Chrome and Edge cache-only subdirectories but never touches cookies, passwords, history, sessions, extensions, bookmarks, downloads, or profile databases. Optional component-store and Delivery Optimization cleanup use Windows-supported commands only.
+
+After showing the preview and obtaining explicit approval for the deep profile and each optional Windows action, execute with the exact phrase:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-DeepCDriveCleanup.ps1" -Mode Execute -ConfirmPhrase "DEEP CLEAN APPROVED CATEGORIES" -IncludeComponentStore -IncludeDeliveryOptimization
+```
+
+Close browsers first. Skip locked files and optional actions that need unavailable administrator rights. Never interpret “thorough” as permission to delete protected, personal, rollback, recovery, or configuration data.
 
 - For approved low-risk file cleanup, preview with the bundled allowlist cleaner. It only considers files older than the category threshold and changes nothing in Preview mode:
 
