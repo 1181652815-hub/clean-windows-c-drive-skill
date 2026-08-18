@@ -1,4 +1,5 @@
 interface:
-  display_name: "C盘安全清理"
-  short_description: "检测 C 盘健康，深度清理可再生缓存并安全转存普通文件"
-  default_prompt: "Use $clean-windows-c-drive to check C: health, preview the fixed deep-safe cleanup profile, and clean or relocate only explicitly approved data."
+  display_name: "C盘空间管理"
+  short_description: "简体中文界面：垃圾清理、大文件与重复文件管理"
+  brand_color: "#2F5BFF"
+  default_prompt: "Use $clean-windows-c-drive to open the Simplified Chinese three-module C: drive manager and scan safely before any cleanup."

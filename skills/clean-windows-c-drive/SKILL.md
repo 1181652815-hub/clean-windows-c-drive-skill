@@ -1,6 +1,6 @@
 ---
 name: clean-windows-c-drive
-description: "Automatically assess Windows C: drive health, deeply clean a fixed allowlist of regenerable caches and diagnostic leftovers, use Windows-supported component cleanup, and relocate approved ordinary user files to another fixed drive without breaking Windows or installed applications. Use when a user asks whether C: is healthy, wants automatic C: checks, asks what is filling C:, requests safe or deep C: cleanup, asks whether files are safe to remove, or wants large files moved off C:. Always run the read-only health gate and preview, protect system/personal/configuration data, use manifest-based copy-verify-delete relocation, and require explicit approval before changing anything."
+description: "Provide a Simplified Chinese Windows desktop interface and CLI workflows to assess C: drive health, clean a fixed allowlist of regenerable junk, find large user files, detect exact duplicate files with SHA-256, and relocate or recycle explicitly approved ordinary user files without breaking Windows or installed applications. Use when a user asks for a C: cleanup app/interface, safe or deep cleanup, large-file cleanup, duplicate-file cleanup, C: health checks, space diagnosis, or moving ordinary files off C:. Always run the health gate and preview, protect system/personal/configuration data, keep one duplicate per group, and require explicit approval before changes."
 ---
 
 # Clean Windows C Drive
@@ -24,6 +24,16 @@ Assess C: health, diagnose usage, separate safe cleanup from review-only data, a
 - Never move installed-program directories, AppData, ProgramData, game libraries, cloud placeholders, shortcuts, profile configuration, WSL/Docker/VM data, or any folder tree with the generic relocation script.
 
 ## Workflow
+
+### 0. Use the Simplified Chinese interface when requested
+
+Launch the bundled three-module desktop interface with Windows PowerShell in STA mode:
+
+```powershell
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Start-CDriveManager.ps1"
+```
+
+The interface contains **垃圾清理**, **查找大文件**, and **重复文件**. It must preserve the same safety rules as the CLI: no action before a scan, all rows unselected by default, exact confirmation before execution, and protected locations excluded by code rather than visual warnings alone.
 
 ### 1. Establish scope
 
@@ -88,10 +98,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-
 
 The deep profile covers only regenerable caches and old diagnostic/installer leftovers at exact roots. It detects Chrome and Edge cache-only subdirectories but never touches cookies, passwords, history, sessions, extensions, bookmarks, downloads, or profile databases. Optional component-store and Delivery Optimization cleanup use Windows-supported commands only.
 
-After showing the preview and obtaining explicit approval for the deep profile and each optional Windows action, execute with the exact phrase:
+After showing the preview and obtaining explicit approval for the deep profile and each optional Windows action, execute the selected categories with the exact phrase:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-DeepCDriveCleanup.ps1" -Mode Execute -ConfirmPhrase "DEEP CLEAN APPROVED CATEGORIES" -IncludeComponentStore -IncludeDeliveryOptimization
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-DeepCDriveCleanup.ps1" -Mode Execute -Categories UserTemp,DirectXShaderCache,ChromeCache,EdgeCache -ConfirmPhrase "DEEP CLEAN APPROVED CATEGORIES"
 ```
 
 Close browsers first. Skip locked files and optional actions that need unavailable administrator rights. Never interpret “thorough” as permission to delete protected, personal, rollback, recovery, or configuration data.
@@ -116,7 +126,32 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-
 - For user files, operate only on an explicit item list and prefer Recycle Bin or a verified destination on another drive.
 - Skip locked or denied files. Do not take ownership or weaken permissions.
 
-### 8. Relocate ordinary files safely
+### 8. Find large and duplicate user files
+
+Read [references/user-file-cleanup-policy.md](references/user-file-cleanup-policy.md) before scanning or handling personal files.
+
+Run the read-only large-file scan:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Find-CDriveLargeFiles.ps1" -MinimumSizeMB 500
+```
+
+Run exact duplicate detection. This hashes same-size candidates and can take time:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Find-CDriveDuplicateFiles.ps1" -MinimumSizeMB 10
+```
+
+Both scanners are limited to the current user's approved known folders on C:. Never broaden them to a drive-root scan. Results are review candidates and must remain unselected by default. For selected results, create a manifest with exact path, size, and SHA-256; duplicate manifests must list every member of each selected group. Preview and then execute only after exact approval:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-SafeUserFileCleanup.ps1" -ManifestPath "<manifest-path>" -Mode Preview
+powershell -NoProfile -ExecutionPolicy Bypass -File "<skill-dir>\scripts\Invoke-SafeUserFileCleanup.ps1" -ManifestPath "<manifest-path>" -Mode Execute -ConfirmPhrase "RECYCLE APPROVED USER FILES"
+```
+
+The executor revalidates roots, attributes, size, and hash, enforces one retained member per duplicate group, and sends approved files to the Recycle Bin. Never empty the Recycle Bin automatically.
+
+### 9. Relocate ordinary files safely
 
 Read [references/relocation-policy.md](references/relocation-policy.md) before proposing relocation.
 
@@ -142,7 +177,7 @@ The executor must copy, verify SHA-256 and size, then delete the original. Never
 
 Move installed apps only through Settings > Apps when the app exposes Move. Move game libraries only through the launcher's supported library feature. Move known folders only through Windows Location properties after separate approval. Never simulate these operations with filesystem moves or junctions.
 
-### 9. Verify
+### 10. Verify
 
 Re-run `Test-CDriveHealth.ps1`, re-measure C: free space, report the before/after difference and all skips/failures, confirm Windows Update and Windows Security were not disabled, and report whether restart is pending. Recommend keeping a practical 15-20 GB free buffer without presenting it as a universal requirement.
 

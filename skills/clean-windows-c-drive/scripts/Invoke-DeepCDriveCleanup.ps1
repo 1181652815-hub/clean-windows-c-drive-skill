@@ -4,6 +4,9 @@ param(
     [ValidateSet('Preview', 'Execute')]
     [string]$Mode,
 
+    [ValidateSet('UserTemp','DirectXShaderCache','CrashDumps','WindowsErrorReports','InstallerTemp','ChromeCache','EdgeCache')]
+    [string[]]$Categories = @('UserTemp','DirectXShaderCache','CrashDumps','WindowsErrorReports','InstallerTemp','ChromeCache','EdgeCache'),
+
     [string]$ConfirmPhrase = '',
 
     [switch]$IncludeComponentStore,
@@ -45,7 +48,7 @@ if ([string]::IsNullOrWhiteSpace($localAppData)) { throw 'Windows LocalApplicati
 $targets = [System.Collections.Generic.List[object]]::new()
 function Add-Target {
     param([string]$Category, [string]$Root, [int]$MinimumAgeDays, [string]$Description)
-    if (-not [string]::IsNullOrWhiteSpace($Root)) {
+    if ($Category -in $Categories -and -not [string]::IsNullOrWhiteSpace($Root)) {
         $targets.Add([pscustomobject]@{
             Category = $Category
             Root = $Root

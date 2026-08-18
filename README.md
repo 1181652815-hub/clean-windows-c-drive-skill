@@ -1,6 +1,6 @@
 # Clean Windows C Drive Skill
 
-A safety-first Agent Skill for checking Windows C: drive health, deeply cleaning a strict allowlist of regenerable caches and diagnostic leftovers, using Windows-supported component cleanup, and relocating approved large Downloads files to another fixed drive.
+A safety-first Agent Skill with a Simplified Chinese Windows interface for junk cleanup, large-file discovery, exact duplicate detection, C: health checks, and verified file handling.
 
 中文说明见下方。
 
@@ -12,6 +12,9 @@ A safety-first Agent Skill for checking Windows C: drive health, deeply cleaning
 - Previews every supported cleanup before deletion.
 - Provides a fixed deep-safe profile for user temp files, DirectX shader cache, Chrome/Edge cache-only directories, old crash dumps, Windows error reports, and installer temporary files.
 - Uses DISM component cleanup and Delivery Optimization cleanup only through supported Windows commands and only after approval.
+- Includes a blue-and-white three-module desktop interface: Junk Cleanup, Large Files, and Duplicate Files.
+- Scans large and duplicate files only in the current user's approved C: folders.
+- Confirms duplicates by matching size and SHA-256, keeps at least one copy, and sends approved files to the Recycle Bin.
 - Builds an exact relocation manifest for approved large Downloads files.
 - Relocates by copy, size/SHA-256 verification, then source deletion.
 - Refuses arbitrary paths, destination overwrites, reparse points, offline placeholders, and protected system locations.
@@ -46,6 +49,14 @@ Restart Codex if the skill does not appear immediately.
 
 ## Use
 
+Open the Simplified Chinese desktop interface:
+
+```powershell
+powershell -NoProfile -STA -ExecutionPolicy Bypass -File "$env:USERPROFILE\.codex\skills\clean-windows-c-drive\scripts\Start-CDriveManager.ps1"
+```
+
+![Simplified Chinese C drive manager](docs/c-drive-manager-junk.png)
+
 Read-only health and space audit:
 
 ```text
@@ -72,17 +83,21 @@ Use $clean-windows-c-drive to create a manifest of large old Downloads files tha
 
 ## 中文介绍
 
-这是一个面向 Windows C 盘的安全体检、清理和文件转存 Skill。它会先检查 C 盘剩余空间、NTFS 卷状态、物理磁盘状态、近期存储错误和 TRIM，再决定能否进入清理流程。
+这是一个带简体中文桌面界面的 Windows C 盘空间管理 Skill，包含“垃圾清理、查找大文件、重复文件”三个模块。启动后会先检查 C 盘状态，再进入扫描和处理流程。
 
 核心原则：先检查、再预览、逐项确认、最后执行。它不会因为一句“清理 C 盘”就删除未指定内容。
 
 ### 可以做什么
 
 - 自动检测 C 盘健康状态。
+- 提供蓝白简体中文桌面界面，三个模块一页切换。
 - 分析临时文件、更新缓存和崩溃转储等占用。
 - 预览符合年龄规则的低风险清理文件。
 - 使用固定“深度安全档”清理临时文件、着色器缓存、浏览器纯缓存、旧崩溃转储、错误报告和安装器临时文件。
 - 组件存储和传递优化缓存只通过 Windows 官方命令处理。
+- 查找当前用户 C 盘目录中的大文件，并按图片、视频、音频、文档、压缩包与安装包分类。
+- 先比较大小、再用 SHA-256 确认重复文件；每组至少保留一份。
+- 对明确勾选的普通用户文件重新校验后移至 Windows 回收站。
 - 在明确批准后清理白名单目录。
 - 为 Downloads 中较大、较旧的普通文件生成精确转存清单。
 - 先复制到其他固定磁盘，校验大小和 SHA-256 后才删除 C 盘原件。
