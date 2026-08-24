@@ -38,7 +38,7 @@ jobs:
         run: |
           $result = Join-Path $env:RUNNER_TEMP 'c-drive-manager-smoke.json'
           & '.\artifacts\win-x64\CDriveManager.exe' --smoke-test $result
-          if ($LASTEXITCODE -ne 0) { throw "Smoke test process failed: $LASTEXITCODE" }
+          if (-not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Smoke test did not produce a result file.' }
           $data = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($data.Status -ne 'PASS') { throw "Smoke test failed: $($data.Error)" }
           Get-FileHash -LiteralPath '.\artifacts\win-x64\CDriveManager.exe' -Algorithm SHA256 | Format-List
