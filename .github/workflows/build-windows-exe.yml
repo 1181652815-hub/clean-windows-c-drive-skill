@@ -37,7 +37,8 @@ jobs:
         shell: pwsh
         run: |
           $result = Join-Path $env:RUNNER_TEMP 'c-drive-manager-smoke.json'
-          & '.\artifacts\win-x64\CDriveManager.exe' --smoke-test $result
+          $process = Start-Process -FilePath '.\artifacts\win-x64\CDriveManager.exe' -ArgumentList @('--smoke-test', $result) -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Smoke test process failed: $($process.ExitCode)" }
           if (-not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Smoke test did not produce a result file.' }
           $data = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($data.Status -ne 'PASS') { throw "Smoke test failed: $($data.Error)" }
