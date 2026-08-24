@@ -22,11 +22,15 @@ public partial class App : Application
             {
                 var bridge = new PowerShellBridge();
                 bridge.EnsureRuntime();
+                var window = new MainWindow();
+                window.AssertResultTableBindings();
+                window.Close();
                 var result = new
                 {
                     Status = "PASS",
                     Product = "C盘空间管理",
                     Modules = new[] { "垃圾清理", "查找大文件", "重复文件" },
+                    ResultTableBindings = "PASS",
                     Runtime = bridge.RuntimeDirectory
                 };
                 File.WriteAllText(e.Args[1], JsonSerializer.Serialize(result, JsonOptions.Default));

@@ -20,7 +20,36 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
+        // Bind the collections directly. WPF only resolves public CLR properties
+        // through a DataContext path, while these collections are intentionally
+        // internal implementation details of the window.
+        LargeGrid.ItemsSource = LargeItems;
+        DuplicateGrid.ItemsSource = DuplicateItems;
         ShowPanel("Junk");
+    }
+
+    internal void AssertResultTableBindings()
+    {
+        var large = new FileCandidate { Category = "测试", SizeGiB = 1, Size = 1, LastWriteTime = "2026-01-01 00:00", Path = @"C:\Users\Test\large.bin" };
+        var duplicate = new FileCandidate { Group = "D0001", Category = "测试", SizeGiB = 1, Size = 1, LastWriteTime = "2026-01-01 00:00", Path = @"C:\Users\Test\copy.bin" };
+
+        LargeItems.Add(large);
+        DuplicateItems.Add(duplicate);
+        LargeGrid.Items.Refresh();
+        DuplicateGrid.Items.Refresh();
+
+        try
+        {
+            if (!ReferenceEquals(LargeGrid.ItemsSource, LargeItems) || LargeGrid.Items.Count != 1)
+                throw new InvalidOperationException("Large-file result table binding failed.");
+            if (!ReferenceEquals(DuplicateGrid.ItemsSource, DuplicateItems) || DuplicateGrid.Items.Count != 1)
+                throw new InvalidOperationException("Duplicate-file result table binding failed.");
+        }
+        finally
+        {
+            LargeItems.Clear();
+            DuplicateItems.Clear();
+        }
     }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)

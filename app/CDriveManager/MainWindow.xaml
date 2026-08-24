@@ -135,7 +135,7 @@
               </StackPanel>
             </Grid>
             <TextBlock x:Name="LargeSummary" Grid.Row="1" Text="扫描结果默认不选择，请核对路径和大小。" Foreground="{StaticResource SubText}" Margin="0,19,0,12"/>
-            <DataGrid x:Name="LargeGrid" Grid.Row="2" ItemsSource="{Binding LargeItems}">
+            <DataGrid x:Name="LargeGrid" Grid.Row="2">
               <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="选择" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Width="58"/>
                 <DataGridTextColumn Header="类型" Binding="{Binding Category}" IsReadOnly="True" Width="120"/>
@@ -163,7 +163,7 @@
               </StackPanel>
             </Grid>
             <TextBlock x:Name="DuplicateSummary" Grid.Row="1" Text="扫描结果默认不选择，请逐组保留至少一个文件。" Foreground="{StaticResource SubText}" Margin="0,19,0,12"/>
-            <DataGrid x:Name="DuplicateGrid" Grid.Row="2" ItemsSource="{Binding DuplicateItems}">
+            <DataGrid x:Name="DuplicateGrid" Grid.Row="2">
               <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="选择" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Width="58"/>
                 <DataGridTextColumn Header="组" Binding="{Binding Group}" IsReadOnly="True" Width="68"/>
@@ -181,7 +181,7 @@
     <Border Grid.Row="2" Background="#E9EEF6" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0">
       <Grid Margin="18,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <TextBlock x:Name="StatusText" Text="就绪｜所有处理都需要先扫描并确认" VerticalAlignment="Center" Foreground="#5C697C" FontSize="12"/>
-        <TextBlock Grid.Column="1" Text="v3.0.0" VerticalAlignment="Center" Foreground="#7B8798" FontSize="12"/>
+        <TextBlock Grid.Column="1" Text="v3.0.1" VerticalAlignment="Center" Foreground="#7B8798" FontSize="12"/>
       </Grid>
     </Border>
   </Grid>

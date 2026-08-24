@@ -8,9 +8,9 @@
     <AssemblyName>CDriveManager</AssemblyName>
     <RootNamespace>CDriveManager</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>3.0.0</Version>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <Version>3.0.1</Version>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <FileVersion>3.0.1.0</FileVersion>
     <Product>C盘空间管理</Product>
     <Company>1181652815-hub</Company>
     <Description>安全优先的 Windows C 盘空间管理工具</Description>

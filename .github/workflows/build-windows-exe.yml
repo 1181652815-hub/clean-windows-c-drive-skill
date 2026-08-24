@@ -42,6 +42,7 @@ jobs:
           if (-not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Smoke test did not produce a result file.' }
           $data = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($data.Status -ne 'PASS') { throw "Smoke test failed: $($data.Error)" }
+          if ($data.ResultTableBindings -ne 'PASS') { throw 'Large-file or duplicate-file table binding failed.' }
           $payload = Join-Path $env:RUNNER_TEMP 'c-drive-manager-health.json'
           '{"Action":"Health"}' | Set-Content -LiteralPath $payload -Encoding ascii
           $bridge = Join-Path $data.Runtime 'scripts\Invoke-DesktopBridge.ps1'
@@ -56,7 +57,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item -LiteralPath README.md -Destination artifacts/win-x64/README.md
-          Compress-Archive -Path artifacts/win-x64/* -DestinationPath artifacts/CDriveManager-v3.0.0-win-x64.zip
+          Compress-Archive -Path artifacts/win-x64/* -DestinationPath artifacts/CDriveManager-v3.0.1-win-x64.zip
           Get-FileHash -LiteralPath artifacts/win-x64/CDriveManager.exe -Algorithm SHA256 |
             ForEach-Object { "$($_.Hash.ToLower())  CDriveManager.exe" } |
             Set-Content -LiteralPath artifacts/SHA256SUMS.txt -Encoding ascii
@@ -64,9 +65,9 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: CDriveManager-v3.0.0-win-x64
+          name: CDriveManager-v3.0.1-win-x64
           path: |
             artifacts/win-x64/CDriveManager.exe
-            artifacts/CDriveManager-v3.0.0-win-x64.zip
+            artifacts/CDriveManager-v3.0.1-win-x64.zip
             artifacts/SHA256SUMS.txt
           if-no-files-found: error

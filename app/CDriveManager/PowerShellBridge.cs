@@ -14,7 +14,7 @@ internal sealed class PowerShellBridge
 
     public PowerShellBridge()
     {
-        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "3.0.0";
+        var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "3.0.1";
         RuntimeDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "CDriveManager", "runtime", version);
