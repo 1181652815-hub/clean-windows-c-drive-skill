@@ -22,9 +22,9 @@ public partial class App : Application
             {
                 var bridge = new PowerShellBridge();
                 bridge.EnsureRuntime();
-                var window = new MainWindow();
-                window.AssertResultTableBindings();
-                window.Close();
+                var smokeWindow = new MainWindow();
+                smokeWindow.AssertResultTableBindings();
+                smokeWindow.Close();
                 var result = new
                 {
                     Status = "PASS",
