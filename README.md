@@ -4,6 +4,18 @@ A safety-first Agent Skill with a Simplified Chinese Windows interface for junk 
 
 中文说明见下方。
 
+## Windows EXE
+
+Download the standalone Windows x64 application from the [latest release](https://github.com/1181652815-hub/clean-windows-c-drive-skill/releases/latest). It runs without Codex or a separate .NET installation.
+
+The application provides the same three Simplified Chinese modules as the Skill:
+
+- Junk cleanup with a fixed regenerable-data allowlist.
+- Large-file discovery in the current user's approved C: folders.
+- Exact duplicate detection using file size and SHA-256.
+
+The app starts without administrator rights. Windows component cleanup and Delivery Optimization require the user to deliberately run it as administrator; ordinary scanning and user-file review do not. The published executable is currently unsigned, so Windows may show an unknown-publisher warning. Verify the release SHA-256 before running it.
+
 ## What it does
 
 - Runs a read-only health gate before cleanup.
@@ -28,6 +40,8 @@ Installed apps and games must be moved through Windows Settings or the applicati
 ## Repository layout
 
 ```text
+app/
+└── CDriveManager/             # .NET 8 WPF desktop application
 skills/
 └── clean-windows-c-drive/
     ├── SKILL.md
@@ -87,6 +101,12 @@ Use $clean-windows-c-drive to create a manifest of large old Downloads files tha
 
 核心原则：先检查、再预览、逐项确认、最后执行。它不会因为一句“清理 C 盘”就删除未指定内容。
 
+### 直接下载 EXE
+
+不使用 Codex 的用户可以在 [GitHub Releases](https://github.com/1181652815-hub/clean-windows-c-drive-skill/releases/latest) 下载 `CDriveManager.exe`。这是 Windows x64 单文件版本，不需要另外安装 .NET，双击即可打开。
+
+程序默认以普通权限运行；只有 Windows 组件清理、传递优化等系统操作需要用户主动选择“以管理员身份运行”。普通扫描、大文件检查和重复文件检查不需要管理员权限。当前发布文件没有商业代码签名，如系统提示“未知发布者”，请先确认文件来自本仓库 Release，并核对 `SHA256SUMS.txt`。
+
 ### 可以做什么
 
 - 自动检测 C 盘健康状态。
@@ -124,7 +144,8 @@ Use $clean-windows-c-drive to create a manifest of large old Downloads files tha
 
 - Windows 10 or Windows 11
 - Windows PowerShell 5.1 or PowerShell 7+
-- An Agent Skills-compatible agent such as Codex
+- For the Skill: an Agent Skills-compatible agent such as Codex
+- For the standalone app: 64-bit Windows; Codex and a separate .NET installation are not required
 
 ## License
 

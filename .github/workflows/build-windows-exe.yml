@@ -42,6 +42,14 @@ jobs:
           if (-not (Test-Path -LiteralPath $result -PathType Leaf)) { throw 'Smoke test did not produce a result file.' }
           $data = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
           if ($data.Status -ne 'PASS') { throw "Smoke test failed: $($data.Error)" }
+          $payload = Join-Path $env:RUNNER_TEMP 'c-drive-manager-health.json'
+          '{"Action":"Health"}' | Set-Content -LiteralPath $payload -Encoding ascii
+          $bridge = Join-Path $data.Runtime 'scripts\Invoke-DesktopBridge.ps1'
+          $healthRaw = & powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $bridge -PayloadPath $payload
+          if ($LASTEXITCODE -ne 0) { throw "Health bridge failed: $LASTEXITCODE" }
+          $health = $healthRaw | ConvertFrom-Json
+          if ([string]::IsNullOrWhiteSpace($health.Overall)) { throw 'Health bridge returned no overall state.' }
+          "Health bridge: $($health.Overall), coverage: $($health.Coverage)"
           Get-FileHash -LiteralPath '.\artifacts\win-x64\CDriveManager.exe' -Algorithm SHA256 | Format-List
 
       - name: Package release

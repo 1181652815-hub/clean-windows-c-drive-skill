@@ -1,6 +1,6 @@
 ---
 name: clean-windows-c-drive
-description: "Provide a Simplified Chinese Windows desktop interface and CLI workflows to assess C: drive health, clean a fixed allowlist of regenerable junk, find large user files, detect exact duplicate files with SHA-256, and relocate or recycle explicitly approved ordinary user files without breaking Windows or installed applications. Use when a user asks for a C: cleanup app/interface, safe or deep cleanup, large-file cleanup, duplicate-file cleanup, C: health checks, space diagnosis, or moving ordinary files off C:. Always run the health gate and preview, protect system/personal/configuration data, keep one duplicate per group, and require explicit approval before changes."
+description: "Provide a standalone Simplified Chinese Windows app and CLI workflows to assess C: drive health, clean a fixed allowlist of regenerable junk, find large user files, detect exact duplicates with SHA-256, and relocate or recycle explicitly approved ordinary user files without breaking Windows or installed applications. Use for the C: cleanup app, safe or deep cleanup, large-file or duplicate cleanup, health checks, space diagnosis, or moving ordinary files off C:. Always run the health gate and preview, protect system/personal/configuration data, keep one duplicate per group, and require explicit approval before changes."
 ---
 
 # Clean Windows C Drive
@@ -26,6 +26,12 @@ Assess C: health, diagnose usage, separate safe cleanup from review-only data, a
 ## Workflow
 
 ### 0. Use the Simplified Chinese interface when requested
+
+Prefer the standalone `CDriveManager.exe` when the user has installed or downloaded it. A known executable may be launched for an interactive request, but launching the app authorizes only its initial read-only health check. The app must still scan first, leave personal-file rows unselected, display an exact confirmation, and enforce the protected locations in code before any cleanup.
+
+The official executable is distributed through this repository's GitHub Releases. It is a self-contained Windows x64 WPF front end with the fixed safety scripts embedded. It does not require Codex or a separate .NET installation, but it still uses the Windows PowerShell included with supported Windows versions for the restricted cleanup backend. Do not download an executable from an unrelated mirror or advise bypassing security warnings without verifying the release source and SHA-256.
+
+If the standalone executable is not available, launch the bundled PowerShell interface:
 
 Launch the bundled three-module desktop interface with Windows PowerShell in STA mode:
 

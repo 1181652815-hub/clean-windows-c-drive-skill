@@ -7,7 +7,7 @@ $utf8 = [Text.UTF8Encoding]::new($false)
 $OutputEncoding = $utf8
 
 try {
-    if (-not (Test-Path -LiteralPath $PayloadPath -PathType Leaf)) { throw '请求文件不存在。' }
+    if (-not (Test-Path -LiteralPath $PayloadPath -PathType Leaf)) { throw 'Request payload was not found.' }
     $request = Get-Content -LiteralPath $PayloadPath -Raw -Encoding UTF8 | ConvertFrom-Json
     $scriptRoot = $PSScriptRoot
 
@@ -43,7 +43,7 @@ try {
         'UserCleanupExecute' {
             & (Join-Path $scriptRoot 'Invoke-SafeUserFileCleanup.ps1') -ManifestPath ([string]$request.ManifestPath) -Mode Execute -ConfirmPhrase 'RECYCLE APPROVED USER FILES'
         }
-        default { throw '不支持的操作。' }
+        default { throw 'Unsupported bridge action.' }
     }
 } catch {
     [Console]::Error.WriteLine($_.Exception.Message)
