@@ -1,0 +1,63 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build and publish single-file EXE
+        shell: pwsh
+        run: >-
+          dotnet publish app/CDriveManager/CDriveManager.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          --output artifacts/win-x64
+          -p:PublishSingleFile=true
+          -p:PublishTrimmed=false
+          -p:ContinuousIntegrationBuild=true
+
+      - name: Smoke test
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP 'c-drive-manager-smoke.json'
+          & '.\artifacts\win-x64\CDriveManager.exe' --smoke-test $result
+          if ($LASTEXITCODE -ne 0) { throw "Smoke test process failed: $LASTEXITCODE" }
+          $data = Get-Content -LiteralPath $result -Raw | ConvertFrom-Json
+          if ($data.Status -ne 'PASS') { throw "Smoke test failed: $($data.Error)" }
+          Get-FileHash -LiteralPath '.\artifacts\win-x64\CDriveManager.exe' -Algorithm SHA256 | Format-List
+
+      - name: Package release
+        shell: pwsh
+        run: |
+          Copy-Item -LiteralPath README.md -Destination artifacts/win-x64/README.md
+          Compress-Archive -Path artifacts/win-x64/* -DestinationPath artifacts/CDriveManager-v3.0.0-win-x64.zip
+          Get-FileHash -LiteralPath artifacts/win-x64/CDriveManager.exe -Algorithm SHA256 |
+            ForEach-Object { "$($_.Hash.ToLower())  CDriveManager.exe" } |
+            Set-Content -LiteralPath artifacts/SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CDriveManager-v3.0.0-win-x64
+          path: |
+            artifacts/win-x64/CDriveManager.exe
+            artifacts/CDriveManager-v3.0.0-win-x64.zip
+            artifacts/SHA256SUMS.txt
+          if-no-files-found: error
